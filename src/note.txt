@@ -1,0 +1,24 @@
+num_steps : 이전 몇 개의 데이터를 바탕으로 의사결정을 할 지. 즉 35이면 aaaaaa,,,,,aaaaa 35개로 다음이 a인지 뭔지 판단
+
+OK x는 35, 32, 28인거 get it but y는 왜 35, 32, 28? 내 생각엔 1, 32, 28이어야 할 것 같은데?
+->y가 어떻게 처리되는지 코드 분석 필요
+
+LSTM(28, 256)
+1. LSTM에 x랑 state 넣었을 때 Y랑 state 
+2. RNNModel에 x랑 state 넣었을 때 Y랑 state 비교
+
+LSTM은 y가 (35,32,28)이 아닌 (35,32,256)으로 나옴, 변경 필요
+
+
+predict할 때 X.size() (1,1)(심지어 (1)을 (1,1)로 reshape), state (1,1,256) -----> Y.size() (1,28) state (1,1,256)
+train할 때 X.size() (35, 32, 28), state (1,32,256) ---------->Y.size() (35,32,256), state(1,32,256)
+
+
+train할 때 X와 Y를 어떻게 할당하는지?
+baaaaaaaaaaaaaaaaaaaba 35개 이면 y는 이거보다 하나 더 나간 aaaaaaaaaaaaaaaaab 형태일듯? 확인 (맞음)
+
+- 확인하고 나만의 X와 Y 생성 사인함수에서 0.7 이상이면 1 아니면 0으로 Y값 생성
+X.size() (5,2,1) 로 ㄱㄱ step 5, batch 2
+
+=====================================
+loss function을 CrossEntropy가 아닌 MSE를 써야할 듯 CrossEntropy는 multi class 분류에 사용
